@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КумысЛесс — Premium Kumys Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3EC;
+    --warm: #E8DED0;
+    --sand: #C9B99A;
+    --terra: #8B5E3C;
+    --deep: #3D2B1F;
+    --accent: #C4784A;
+    --white: #FDFAF6;
+    --green: #4A6741;
+    --red: #8B2020;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--deep); }
+
+  /* NAV */
+  nav {
+    background: var(--deep);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--cream); letter-spacing: 0.05em; }
+  .nav-logo span { color: var(--sand); font-style: italic; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--warm); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--sand); }
+  .nav-cart { position: relative; cursor: pointer; color: var(--warm); font-size: 1.3rem; transition: color 0.2s; background: none; border: none; }
+  .nav-cart:hover { color: var(--sand); }
+  .cart-badge {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--accent); color: white; border-radius: 50%;
+    width: 18px; height: 18px; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* MODULE TABS */
+  .module-tabs {
+    background: var(--deep);
+    display: flex;
+    overflow-x: auto;
+    padding: 0 2rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .tab-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    background: none;
+    color: rgba(232,222,208,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--sand); border-bottom-color: var(--sand); }
+  .tab-btn:hover { color: var(--warm); }
+
+  /* MODULES */
+  .module { display: none; min-height: 80vh; }
+  .module.active { display: block; }
+
+  /* ===== MODULE 1: SHOP ===== */
+  .hero {
+    background: linear-gradient(135deg, var(--deep) 0%, #5C3D27 50%, var(--terra) 100%);
+    padding: 5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") repeat;
+  }
+  .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.4rem, 6vw, 4rem); color: var(--cream); font-weight: 600; line-height: 1.1; position: relative; }
+  .hero h1 em { color: var(--sand); display: block; }
+  .hero p { color: var(--warm); font-size: 1rem; margin: 1rem auto 2rem; max-width: 480px; font-weight: 300; line-height: 1.7; position: relative; }
+  .hero-btn {
+    background: var(--accent); color: white; border: none; padding: 0.9rem 2.5rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+    border-radius: 2px; transition: all 0.2s; position: relative;
+  }
+  .hero-btn:hover { background: #A8613A; transform: translateY(-1px); }
+
+  .section { padding: 3rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 0.3rem; font-weight: 600; }
+  .section-sub { color: var(--terra); font-size: 0.85rem; margin-bottom: 2rem; }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+
+  .product-card {
+    background: var(--white);
+    border: 1px solid var(--warm);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(61,43,31,0.12); }
+  .product-img {
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5rem;
+    position: relative;
+  }
+  .product-img.p1 { background: linear-gradient(135deg, #F0E8D8, #E0D0B8); }
+  .product-img.p2 { background: linear-gradient(135deg, #E8F0D8, #D0E0B8); }
+  .product-img.p3 { background: linear-gradient(135deg, #F0E0D8, #E0C8B8); }
+  .product-img.p4 { background: linear-gradient(135deg, #D8E8F0, #B8D0E0); }
+  .product-img.p5 { background: linear-gradient(135deg, #F0D8E8, #E0B8D0); }
+  .product-img.p6 { background: linear-gradient(135deg, #E8E0D8, #D8C8B0); }
+  .badge {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--accent); color: white;
+    font-size: 0.7rem; font-weight: 600; padding: 3px 8px;
+    border-radius: 2px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .badge.new { background: var(--green); }
+  .product-info { padding: 1.1rem; }
+  .product-name { font-weight: 500; font-size: 0.95rem; margin-bottom: 0.25rem; }
+  .product-desc { font-size: 0.8rem; color: #7A6B5D; margin-bottom: 0.75rem; line-height: 1.5; }
+  .product-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; color: var(--terra); }
+  .add-btn {
+    background: var(--deep); color: var(--cream); border: none;
+    padding: 0.5rem 1rem; font-size: 0.78rem; font-weight: 500;
+    letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+    border-radius: 2px; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .add-btn:hover { background: var(--accent); }
+  .add-btn.added { background: var(--green); }
+
+  /* ===== MODULE 2: CART ===== */
+  .cart-section { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+  .cart-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; margin-bottom: 2rem; }
+  .cart-empty { text-align: center; padding: 4rem 2rem; color: #9A8B7C; }
+  .cart-empty span { font-size: 4rem; display: block; margin-bottom: 1rem; }
+  .cart-item {
+    background: var(--white); border: 1px solid var(--warm);
+    border-radius: 4px; padding: 1.2rem;
+    display: flex; align-items: center; gap: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .cart-item-emoji { font-size: 2.5rem; width: 60px; text-align: center; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-weight: 500; margin-bottom: 0.25rem; }
+  .cart-item-price { color: var(--terra); font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+  .qty-ctrl { display: flex; align-items: center; gap: 0.75rem; }
+  .qty-btn {
+    width: 28px; height: 28px; border: 1px solid var(--sand); background: none;
+    border-radius: 2px; font-size: 1rem; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; transition: all 0.15s;
+    color: var(--deep);
+  }
+  .qty-btn:hover { background: var(--warm); }
+  .qty-num { font-weight: 500; min-width: 20px; text-align: center; }
+  .remove-btn { background: none; border: none; color: var(--red); cursor: pointer; font-size: 1.1rem; padding: 4px; }
+  .cart-summary {
+    background: var(--deep); color: var(--cream);
+    padding: 1.5rem 1.8rem; border-radius: 4px; margin-top: 1.5rem;
+  }
+  .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--warm); }
+  .summary-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.15); color: var(--sand); }
+  .checkout-btn {
+    width: 100%; background: var(--accent); color: white; border: none;
+    padding: 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; border-radius: 2px; margin-top: 1rem; transition: all 0.2s;
+  }
+  .checkout-btn:hover { background: #A8613A; }
+
+  /* ===== MODULE 3: CHECKOUT ===== */
+  .checkout-section { max-width: 700px; margin: 0 auto; padding: 3rem 2rem; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--terra); margin-bottom: 0.4rem; }
+  .form-input, .form-select {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1px solid var(--warm); border-radius: 2px;
+    background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    color: var(--deep); transition: border-color 0.2s; outline: none;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--terra); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; margin: 1.5rem 0 1rem; color: var(--deep); }
+  .submit-order-btn {
+    width: 100%; background: var(--green); color: white; border: none;
+    padding: 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; border-radius: 2px; margin-top: 1.5rem; transition: all 0.2s;
+  }
+  .submit-order-btn:hover { background: #3A5530; }
+  .order-success {
+    text-align: center; padding: 3rem 2rem;
+    background: var(--white); border: 1px solid var(--warm); border-radius: 4px;
+    display: none;
+  }
+  .order-success.show { display: block; }
+  .success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  .order-number { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--green); font-weight: 600; }
+
+  /* ===== MODULE 4: AI CHAT ===== */
+  .ai-section { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .ai-header { margin-bottom: 2rem; }
+  .ai-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .ai-header p { color: #7A6B5D; font-size: 0.9rem; line-height: 1.6; }
+
+  .prompt-analysis {
+    background: var(--white); border: 1px solid var(--warm); border-radius: 4px;
+    padding: 1.5rem; margin-bottom: 1.5rem;
+  }
+  .analysis-title { font-weight: 500; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--terra); margin-bottom: 1rem; }
+  .prompt-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem; }
+  .prompt-box { padding: 1rem; border-radius: 4px; }
+  .prompt-box.bad { background: #FFF0F0; border: 1px solid #F0CCCC; }
+  .prompt-box.good { background: #F0FFF4; border: 1px solid #BBEEDD; }
+  .prompt-box-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .prompt-box.bad .prompt-box-label { color: var(--red); }
+  .prompt-box.good .prompt-box-label { color: var(--green); }
+  .prompt-box p { font-size: 0.82rem; line-height: 1.55; color: var(--deep); font-style: italic; }
+  .features-list { list-style: none; }
+  .features-list li { font-size: 0.84rem; padding: 0.35rem 0; padding-left: 1.5rem; position: relative; color: var(--deep); }
+  .features-list li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 600; }
+  .mistakes-list li::before { content: '✗'; color: var(--red); }
+
+  .chat-container {
+    background: var(--white); border: 1px solid var(--warm); border-radius: 4px;
+    display: flex; flex-direction: column; height: 500px;
+  }
+  .chat-header {
+    background: var(--deep); color: var(--cream); padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem; border-radius: 4px 4px 0 0;
+  }
+  .chat-ai-dot { width: 8px; height: 8px; background: #4CAF50; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .chat-ai-name { font-size: 0.9rem; font-weight: 500; }
+  .chat-ai-model { font-size: 0.75rem; color: var(--sand); margin-left: auto; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .msg { max-width: 80%; padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.88rem; line-height: 1.55; }
+  .msg.ai { background: var(--cream); border: 1px solid var(--warm); align-self: flex-start; color: var(--deep); }
+  .msg.user { background: var(--deep); color: var(--cream); align-self: flex-end; }
+  .msg.loading { color: #9A8B7C; font-style: italic; }
+  .chat-input-area {
+    padding: 1rem; border-top: 1px solid var(--warm);
+    display: flex; gap: 0.75rem;
+  }
+  .chat-input {
+    flex: 1; padding: 0.7rem 1rem; border: 1px solid var(--warm);
+    border-radius: 2px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    background: var(--cream); color: var(--deep); outline: none;
+    transition: border-color 0.2s; resize: none; height: 44px;
+  }
+  .chat-input:focus { border-color: var(--terra); }
+  .chat-send {
+    background: var(--accent); color: white; border: none; padding: 0 1.25rem;
+    border-radius: 2px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500; transition: all 0.2s; white-space: nowrap;
+  }
+  .chat-send:hover { background: #A8613A; }
+  .chat-send:disabled { background: var(--sand); cursor: not-allowed; }
+  .quick-prompts { padding: 0.75rem 1.5rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-btn {
+    background: var(--cream); border: 1px solid var(--sand); color: var(--terra);
+    padding: 0.3rem 0.75rem; font-size: 0.75rem; border-radius: 20px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .quick-btn:hover { background: var(--warm); }
+
+  /* ===== MODULE 5: ABOUT ===== */
+  .about-hero {
+    background: var(--deep);
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  .about-hero h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--cream); font-weight: 600; margin-bottom: 0.75rem; }
+  .about-hero p { color: var(--warm); max-width: 580px; margin: 0 auto; line-height: 1.8; font-weight: 300; }
+  .about-content { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
+  .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+  .about-card {
+    background: var(--white); border: 1px solid var(--warm); border-radius: 4px;
+    padding: 1.75rem;
+  }
+  .about-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .about-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 0.6rem; }
+  .about-card p { font-size: 0.87rem; color: #7A6B5D; line-height: 1.7; }
+  .deploy-box {
+    background: var(--deep); color: var(--cream); border-radius: 4px;
+    padding: 2rem; margin-top: 2rem;
+  }
+  .deploy-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--sand); margin-bottom: 1rem; }
+  .deploy-steps { list-style: none; counter-reset: steps; }
+  .deploy-steps li {
+    counter-increment: steps; padding: 0.75rem 0 0.75rem 3rem;
+    position: relative; font-size: 0.88rem; color: var(--warm);
+    border-bottom: 1px solid rgba(255,255,255,0.08); line-height: 1.6;
+  }
+  .deploy-steps li::before {
+    content: counter(steps);
+    position: absolute; left: 0; top: 0.75rem;
+    background: var(--accent); color: white;
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 600;
+  }
+  code { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 2px; font-family: monospace; font-size: 0.85em; color: var(--sand); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    display: none; align-items: center; justify-content: center; z-index: 999;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 4px; padding: 2rem;
+    max-width: 480px; width: 90%; position: relative;
+    animation: slideUp 0.2s ease;
+  }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:none;opacity:1} }
+  .modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .modal-emoji { font-size: 3rem; margin-bottom: 0.75rem; display: block; }
+  .modal p { font-size: 0.88rem; color: #7A6B5D; line-height: 1.6; margin-bottom: 1rem; }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--sand);
+  }
+  .modal-add-btn {
+    width: 100%; background: var(--deep); color: var(--cream); border: none;
+    padding: 0.85rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; border-radius: 2px; transition: all 0.2s; margin-top: 0.5rem;
+  }
+  .modal-add-btn:hover { background: var(--accent); }
+
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+    background: var(--deep); color: var(--cream); padding: 0.85rem 1.5rem;
+    border-radius: 4px; font-size: 0.88rem; transform: translateY(80px);
+    opacity: 0; transition: all 0.3s; border-left: 3px solid var(--accent);
+  }
+  .toast.show { transform: none; opacity: 1; }
+
+  @media (max-width: 640px) {
+    .prompt-compare { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Кумыс<span>Лесс</span></div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showModule('shop')">Shop</a></li>
+    <li><a href="#" onclick="showModule('cart')">Cart</a></li>
+    <li><a href="#" onclick="showModule('checkout')">Checkout</a></li>
+    <li><a href="#" onclick="showModule('ai')">AI Chat</a></li>
+    <li><a href="#" onclick="showModule('about')">About</a></li>
+  </ul>
+  <button class="nav-cart" onclick="showModule('cart')" aria-label="Open cart">
+    🛒
+    <span class="cart-badge" id="cartBadge">0</span>
+  </button>
+</nav>
+
+<div class="module-tabs">
+  <button class="tab-btn active" onclick="showModule('shop')" id="tab-shop">🏪 Shop</button>
+  <button class="tab-btn" onclick="showModule('cart')" id="tab-cart">🛒 Cart</button>
+  <button class="tab-btn" onclick="showModule('checkout')" id="tab-checkout">💳 Checkout</button>
+  <button class="tab-btn" onclick="showModule('ai')" id="tab-ai">🤖 AI Assistant</button>
+  <button class="tab-btn" onclick="showModule('about')" id="tab-about">ℹ️ About</button>
+</div>
+
+<!-- ===== MODULE 1: SHOP ===== -->
+<div class="module active" id="module-shop">
+  <div class="hero">
+    <h1>Traditional Kazakh<em>Fermented Kumys</em></h1>
+    <p>Premium mare's milk, naturally fermented using centuries-old traditions of the Kazakh steppe</p>
+    <button class="hero-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Explore Products</button>
+  </div>
+  <div class="section" id="products">
+    <div class="section-title">Our Products</div>
+    <div class="section-sub">Sourced from free-range Kazakh mares</div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</div>
+
+<!-- ===== MODULE 2: CART ===== -->
+<div class="module" id="module-cart">
+  <div class="cart-section">
+    <div class="cart-title">Your Cart</div>
+    <div id="cartContent"></div>
+  </div>
+</div>
+
+<!-- ===== MODULE 3: CHECKOUT ===== -->
+<div class="module" id="module-checkout">
+  <div class="checkout-section">
+    <div class="section-title">Checkout</div>
+    <div id="checkoutForm">
+      <div class="form-section-title">Contact Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" type="text" placeholder="Aibek" id="firstName">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" type="text" placeholder="Seitkali" id="lastName">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="aibek@example.kz" id="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input class="form-input" type="tel" placeholder="+7 (700) 000-0000" id="phone">
+      </div>
+
+      <div class="form-section-title">Delivery Address</div>
+      <div class="form-group">
+        <label class="form-label">City</label>
+        <select class="form-select" id="city">
+          <option>Astana</option>
+          <option>Almaty</option>
+          <option>Shymkent</option>
+          <option>Karaganda</option>
+          <option>Aktobe</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Street Address</label>
+        <input class="form-input" type="text" placeholder="Mangilik El Ave, 55" id="address">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Apartment / Suite</label>
+          <input class="form-input" type="text" placeholder="Apt 12" id="apt">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Postal Code</label>
+          <input class="form-input" type="text" placeholder="010000" id="postal">
+        </div>
+      </div>
+
+      <div class="form-section-title">Payment</div>
+      <div class="form-group">
+        <label class="form-label">Payment Method</label>
+        <select class="form-select" id="payMethod">
+          <option>💳 Kaspi Pay</option>
+          <option>💳 Card (Visa / Mastercard)</option>
+          <option>💵 Cash on Delivery</option>
+          <option>📱 Halyk Bank</option>
+        </select>
+      </div>
+      <div class="form-group" id="cardFields">
+        <label class="form-label">Card Number</label>
+        <input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="cardNum" oninput="formatCard(this)">
+      </div>
+      <div id="orderSummaryBox" style="background:var(--white);border:1px solid var(--warm);border-radius:4px;padding:1.2rem;margin:1rem 0;"></div>
+      <button class="submit-order-btn" onclick="placeOrder()">Place Order →</button>
+    </div>
+    <div class="order-success" id="orderSuccess">
+      <div class="success-icon">🎉</div>
+      <div class="order-number" id="orderNum"></div>
+      <p style="margin-top:0.5rem;color:#7A6B5D;font-size:0.9rem;">Your kumys is on its way! We'll send a confirmation to your email.</p>
+      <button onclick="showModule('shop')" style="margin-top:1.5rem;background:var(--deep);color:var(--cream);border:none;padding:0.8rem 2rem;border-radius:2px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 4: AI CHAT ===== -->
+<div class="module" id="module-ai">
+  <div class="ai-section">
+    <div class="ai-header">
+      <h2>AI Product Assistant</h2>
+      <p>Powered by Claude (claude-sonnet-4-20250514). Ask about our kumys products, health benefits, recipes, or anything about Kazakh fermented drinks.</p>
+    </div>
+
+    <div class="prompt-analysis">
+      <div class="analysis-title">📊 Prompt Engineering Analysis</div>
+      <div class="prompt-compare">
+        <div class="prompt-box bad">
+          <div class="prompt-box-label">❌ Weak Prompt</div>
+          <p>"Tell me about kumys"</p>
+        </div>
+        <div class="prompt-box good">
+          <div class="prompt-box-label">✅ My Optimised Prompt</div>
+          <p>"You are a knowledgeable specialist in Kazakh traditional dairy products. Describe the health benefits of kumys (fermented mare's milk), its probiotic content, and how it compares to kefir. Be specific, use bullet points, and keep your answer under 200 words."</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div>
+          <div class="analysis-title" style="margin-bottom:0.6rem;">✅ Features of a Good Prompt</div>
+          <ul class="features-list">
+            <li>Assigns a clear <strong>role</strong> to the AI</li>
+            <li>Provides specific <strong>context</strong> about the domain</li>
+            <li>Defines the expected <strong>output format</strong></li>
+            <li>Sets a <strong>length constraint</strong></li>
+            <li>Asks a <strong>specific question</strong>, not a broad topic</li>
+            <li>Uses <strong>comparison framing</strong> for richer answers</li>
+          </ul>
+        </div>
+        <div>
+          <div class="analysis-title" style="margin-bottom:0.6rem;">❌ Common AI Answer Mistakes</div>
+          <ul class="features-list mistakes-list">
+            <li>Overly generic, lacks specificity</li>
+            <li>Hallucinates citations/statistics</li>
+            <li>Adds unnecessary disclaimers</li>
+            <li>Mixes up regional terminology</li>
+            <li>Ignores the requested format</li>
+            <li>Responds beyond the asked scope</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #E8CCA8;border-radius:4px;padding:1rem 1.2rem;margin-bottom:1rem;font-size:0.84rem;color:#6B4C2A;">
+      <strong>🔑 API Key required</strong> — This chat uses the real Claude API. Paste your Anthropic API key below (it stays only in your browser and is never stored).
+      Get a free key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent);">console.anthropic.com</a>
+      <div style="display:flex;gap:0.6rem;margin-top:0.6rem;">
+        <input id="apiKeyInput" type="password" placeholder="sk-ant-..." style="flex:1;padding:0.5rem 0.75rem;border:1px solid #C9B99A;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.84rem;background:white;color:#3D2B1F;outline:none;">
+        <button onclick="saveKey()" style="background:var(--terra);color:white;border:none;padding:0.5rem 1rem;border-radius:2px;font-size:0.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">Save</button>
+        <button onclick="clearKey()" style="background:none;border:1px solid #C9B99A;color:#8B5E3C;padding:0.5rem 0.75rem;border-radius:2px;font-size:0.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;">Clear</button>
+      </div>
+      <div id="keyStatus" style="margin-top:0.4rem;font-size:0.78rem;"></div>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-ai-dot"></div>
+        <div class="chat-ai-name">Kumys AI Assistant</div>
+        <div class="chat-ai-model">claude-sonnet-4-20250514</div>
+      </div>
+      <div class="quick-prompts">
+        <button class="quick-btn" onclick="sendQuick('What are the health benefits of kumys?')">Health benefits</button>
+        <button class="quick-btn" onclick="sendQuick('How is traditional kumys made?')">How it&apos;s made</button>
+        <button class="quick-btn" onclick="sendQuick('What products do you recommend for beginners?')">For beginners</button>
+        <button class="quick-btn" onclick="sendQuick('Compare kumys vs kefir nutrition')">vs Kefir</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg ai">Сәлем! 👋 I'm your Kumys AI assistant. Ask me anything about our fermented mare's milk products, their benefits, recipes, or the history of kumys in Kazakh culture!</div>
+      </div>
+      <div class="chat-input-area">
+        <input class="chat-input" id="chatInput" placeholder="Ask about kumys, products, health benefits..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}">
+        <button class="chat-send" id="sendBtn" onclick="sendMessage()">Send →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 5: ABOUT ===== -->
+<div class="module" id="module-about">
+  <div class="about-hero">
+    <h2>About КумысЛесс</h2>
+    <p>We bring the ancient healing tradition of Kazakh fermented mare's milk to modern consumers — pure, natural, and crafted with respect for our ancestors' wisdom.</p>
+  </div>
+  <div class="about-content">
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="about-icon">🐎</div>
+        <h3>Our Heritage</h3>
+        <p>Kumys has been produced by nomadic Kazakh tribes for over 2,500 years. Our producers use traditional fermentation methods passed down through generations on the open steppe.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-icon">🌿</div>
+        <h3>Natural & Pure</h3>
+        <p>No additives, no preservatives. Our kumys is made from milk of free-roaming mares, fermented naturally with live Lactobacillus cultures for maximum probiotic benefit.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-icon">🚚</div>
+        <h3>Fast Delivery</h3>
+        <p>Refrigerated delivery across all major Kazakh cities. Orders placed before 12:00 are dispatched same day to ensure freshness reaches you at peak quality.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-icon">🔬</div>
+        <h3>Lab Certified</h3>
+        <p>Every batch undergoes quality testing at our Almaty laboratory. Certified by Kazakhstan's National Center of Expertise for food safety and microbiological standards.</p>
+      </div>
+    </div>
+
+    <div class="deploy-box">
+      <h3>🚀 How to Deploy This Website (Module 2 Notes)</h3>
+      <p style="color:var(--warm);font-size:0.85rem;margin-bottom:1rem;line-height:1.6;">To make this website publicly accessible to your mentor, you can use any of these free hosting methods:</p>
+      <ol class="deploy-steps">
+        <li><strong>GitHub Pages</strong> — Upload this HTML file to a GitHub repository, go to Settings → Pages, select the main branch. Your site will be live at <code>username.github.io/repo-name</code> within minutes. Free, no server needed.</li>
+        <li><strong>Netlify Drop</strong> — Go to <code>app.netlify.com/drop</code>, drag and drop this HTML file. You get a live URL instantly (e.g. <code>random-name.netlify.app</code>). No account required for basic use.</li>
+        <li><strong>Vercel</strong> — Install Vercel CLI: <code>npm i -g vercel</code>, then run <code>vercel</code> in the folder with this file. Live URL in under 30 seconds.</li>
+        <li><strong>Cloudflare Pages</strong> — Connect your GitHub repo or upload directly via the dashboard. Provides a <code>.pages.dev</code> subdomain with global CDN. Best performance option.</li>
+        <li><strong>Replit</strong> — Create a new HTML Repl, paste this code, and click "Run". Your mentor can see it live at the provided Replit URL. Also allows real-time collaboration.</li>
+      </ol>
+    </div>
+
+    <div style="margin-top:2rem;background:var(--white);border:1px solid var(--warm);border-radius:4px;padding:1.5rem;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;margin-bottom:1rem;">Contact Us</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;font-size:0.87rem;color:#7A6B5D;">
+        <div>📧 <a href="mailto:hello@kumysless.kz" style="color:var(--terra);text-decoration:none;">hello@kumysless.kz</a></div>
+        <div>📞 <a href="tel:+77001234567" style="color:var(--terra);text-decoration:none;">+7 (700) 123-4567</a></div>
+        <div>📍 Astana, Mangilik El Ave, 55</div>
+        <div>🕐 Mon–Sat, 9:00–19:00</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <span class="modal-emoji" id="modalEmoji"></span>
+    <h3 id="modalName"></h3>
+    <p id="modalDesc"></p>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--terra);margin-bottom:1rem;" id="modalPrice"></div>
+    <div style="font-size:0.82rem;color:#7A6B5D;margin-bottom:1rem;" id="modalDetails"></div>
+    <button class="modal-add-btn" onclick="addFromModal()">Add to Cart →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUCTS = [
+  { id:1, name:'Classic Kumys', emoji:'🥛', desc:'Traditional 3-day fermented mare\'s milk. Slightly fizzy, mildly sour.', price:1200, cls:'p1', badge:'Bestseller', details:'Volume: 1L · Fat: 1.5% · Shelf life: 5 days · Probiotic cultures: Lactobacillus, Kluyveromyces' },
+  { id:2, name:'Premium Aged Kumys', emoji:'🫙', desc:'7-day fermented for deeper flavor and higher probiotic content.', price:1800, cls:'p2', badge:'New', badgeClass:'new', details:'Volume: 0.75L · Fat: 2.0% · Shelf life: 7 days · Alcohol: ~1.5%' },
+  { id:3, name:'Kumys Concentrate', emoji:'🍶', desc:'3× concentrated. Mix with water or use in cooking.', price:2400, cls:'p3', badge:'', details:'Volume: 0.5L · Makes 1.5L when diluted · Rich in B-vitamins' },
+  { id:4, name:'Kumys Starter Kit', emoji:'🧑‍🍳', desc:'Fermentation starter + 2L fresh mare\'s milk. Make your own at home!', price:3500, cls:'p4', badge:'New', badgeClass:'new', details:'Includes: live culture sachet, temperature guide, recipe booklet' },
+  { id:5, name:'Kumys Soap Bar', emoji:'🧼', desc:'Handmade soap with fermented kumys. Skin-softening lactic acids.', price:900, cls:'p5', badge:'', details:'Weight: 100g · Ingredients: kumys, shea butter, oatmeal · Vegan' },
+  { id:6, name:'Kumys Gift Set', emoji:'🎁', desc:'3 bottles + branded ceramic bowl. Perfect Kazakh gift.', price:5500, cls:'p6', badge:'Gift', details:'Contains: Classic 1L × 2, Premium 0.75L × 1, ceramic bowl · Boxed' }
+];
+
+let cart = JSON.parse(localStorage.getItem('kumys_cart') || '[]');
+let modalProduct = null;
+
+function showModule(m) {
+  document.querySelectorAll('.module').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('module-'+m).classList.add('active');
+  document.getElementById('tab-'+m).classList.add('active');
+  if(m==='cart') renderCart();
+  if(m==='checkout') renderOrderSummary();
+  window.scrollTo(0,0);
+}
+
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  grid.innerHTML = PRODUCTS.map(p => `
+    <div class="product-card" onclick="openModal(${p.id})">
+      <div class="product-img ${p.cls}">
+        ${p.badge ? `<div class="badge ${p.badgeClass||''}">${p.badge}</div>` : ''}
+        <span>${p.emoji}</span>
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-bottom">
+          <div class="product-price">₸${p.price.toLocaleString()}</div>
+          <button class="add-btn" id="addbtn-${p.id}" onclick="event.stopPropagation();addToCart(${p.id})">Add</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openModal(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  modalProduct = p;
+  document.getElementById('modalEmoji').textContent = p.emoji;
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalPrice').textContent = '₸'+p.price.toLocaleString();
+  document.getElementById('modalDetails').textContent = p.details;
+  document.getElementById('productModal').classList.add('show');
+}
+function closeModal() { document.getElementById('productModal').classList.remove('show'); }
+function addFromModal() { if(modalProduct){ addToCart(modalProduct.id); closeModal(); } }
+document.getElementById('productModal').addEventListener('click', e=>{ if(e.target===e.currentTarget)closeModal(); });
+
+function addToCart(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  const existing = cart.find(x=>x.id===id);
+  if(existing) existing.qty++;
+  else cart.push({...p, qty:1});
+  saveCart();
+  showToast('🛒 '+p.name+' added to cart');
+  const btn = document.getElementById('addbtn-'+id);
+  if(btn){ btn.textContent='✓ Added'; btn.classList.add('added'); setTimeout(()=>{btn.textContent='Add';btn.classList.remove('added');},1500); }
+}
+
+function saveCart() {
+  localStorage.setItem('kumys_cart', JSON.stringify(cart));
+  document.getElementById('cartBadge').textContent = cart.reduce((s,i)=>s+i.qty,0);
+}
+
+function renderCart() {
+  const el = document.getElementById('cartContent');
+  if(!cart.length){
+    el.innerHTML = `<div class="cart-empty"><span>🛒</span><p>Your cart is empty.</p><button onclick="showModule('shop')" style="margin-top:1rem;background:var(--deep);color:var(--cream);border:none;padding:0.7rem 1.8rem;border-radius:2px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;">Browse Products</button></div>`;
+    return;
+  }
+  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const delivery = subtotal>5000?0:500;
+  const total = subtotal+delivery;
+  el.innerHTML = cart.map(item=>`
+    <div class="cart-item">
+      <div class="cart-item-emoji">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">₸${item.price.toLocaleString()} each</div>
+      </div>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+      </div>
+      <button class="remove-btn" onclick="removeItem(${item.id})">✕</button>
+    </div>
+  `).join('') + `
+    <div class="cart-summary">
+      <div class="summary-row"><span>Subtotal</span><span>₸${subtotal.toLocaleString()}</span></div>
+      <div class="summary-row"><span>Delivery</span><span>${delivery===0?'<span style="color:#9FE1CB">Free</span>':'₸'+delivery}</span></div>
+      <div class="summary-total"><span>Total</span><span>₸${total.toLocaleString()}</span></div>
+      <button class="checkout-btn" onclick="showModule('checkout')">Proceed to Checkout →</button>
+    </div>`;
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(x=>x.id===id);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty<=0) cart = cart.filter(x=>x.id!==id);
+  saveCart(); renderCart();
+}
+function removeItem(id) { cart=cart.filter(x=>x.id!==id); saveCart(); renderCart(); }
+
+function renderOrderSummary() {
+  const box = document.getElementById('orderSummaryBox');
+  if(!cart.length){ box.innerHTML='<p style="color:#9A8B7C;font-size:0.88rem;">Cart is empty. <a href="#" onclick="showModule(\'shop\')" style="color:var(--terra)">Add products first</a></p>'; return; }
+  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const delivery = subtotal>5000?0:500;
+  box.innerHTML = `<div style="font-size:0.82rem;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--terra);margin-bottom:0.6rem;">Order Summary</div>`+
+    cart.map(i=>`<div style="display:flex;justify-content:space-between;font-size:0.85rem;padding:0.25rem 0;color:#5A4A3C;">${i.emoji} ${i.name} ×${i.qty}<span>₸${(i.price*i.qty).toLocaleString()}</span></div>`).join('')+
+    `<div style="display:flex;justify-content:space-between;font-size:0.85rem;padding:0.4rem 0;border-top:1px solid var(--warm);margin-top:0.5rem;font-weight:500;">Total<span>₸${(subtotal+delivery).toLocaleString()}</span></div>`;
+}
+
+function formatCard(input) {
+  let v = input.value.replace(/\D/g,'').substring(0,16);
+  input.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+function placeOrder() {
+  if(!cart.length){ showToast('⚠️ Cart is empty!'); return; }
+  const fn = document.getElementById('firstName').value.trim();
+  const em = document.getElementById('email').value.trim();
+  const addr = document.getElementById('address').value.trim();
+  if(!fn||!em||!addr){ showToast('⚠️ Please fill in required fields'); return; }
+  const orderNum = 'KL-'+Date.now().toString().slice(-6);
+  document.getElementById('orderNum').textContent = 'Order '+orderNum+' placed!';
+  document.getElementById('checkoutForm').style.display = 'none';
+  document.getElementById('orderSuccess').classList.add('show');
+  cart = []; saveCart();
+  showToast('✅ Order confirmed!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ===== AI CHAT =====
+const SYSTEM_PROMPT = `You are a knowledgeable and friendly specialist in Kazakh traditional dairy products, specifically kumys (fermented mare's milk). You work as an assistant for КумысЛесс, a premium kumys eCommerce shop in Kazakhstan.
+
+Our products:
+- Classic Kumys (1L, ₸1,200) — 3-day fermented, 1.5% fat
+- Premium Aged Kumys (0.75L, ₸1,800) — 7-day fermented, higher probiotic content
+- Kumys Concentrate (0.5L, ₸2,400) — 3× concentrated
+- Kumys Starter Kit (₸3,500) — fermentation starter + 2L fresh mare's milk
+- Kumys Soap Bar (100g, ₸900) — handmade with fermented kumys
+- Kumys Gift Set (₸5,500) — 3 bottles + ceramic bowl
+
+Guidelines:
+- Be warm, knowledgeable, and culturally aware of Kazakh traditions
+- Provide accurate, specific information about kumys nutrition, health benefits, and preparation
+- When recommending products, be helpful but not pushy
+- Keep answers concise (under 200 words) unless asked for detail
+- Use bullet points for lists
+- Correct any common misconceptions about kumys
+- You may greet in Kazakh (Сәлем!) occasionally`;
+
+const chatHistory = [];
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+  addChatMsg(msg,'user');
+  input.value = '';
+  await callAI(msg);
+}
+
+function sendQuick(msg) {
+  document.getElementById('chatInput').value = msg;
+  sendMessage();
+}
+
+function addChatMsg(text, role) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg '+role;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+let savedApiKey = sessionStorage.getItem('kumys_api_key') || '';
+function saveKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if(!val.startsWith('sk-ant-')){ document.getElementById('keyStatus').innerHTML='<span style="color:#8B2020">⚠️ Key should start with sk-ant-</span>'; return; }
+  savedApiKey = val;
+  sessionStorage.setItem('kumys_api_key', val);
+  document.getElementById('keyStatus').innerHTML='<span style="color:#4A6741">✓ Key saved for this session</span>';
+  document.getElementById('apiKeyInput').value='';
+}
+function clearKey() {
+  savedApiKey=''; sessionStorage.removeItem('kumys_api_key');
+  document.getElementById('apiKeyInput').value='';
+  document.getElementById('keyStatus').innerHTML='<span style="color:#8B5E3C">Key cleared</span>';
+}
+if(savedApiKey) document.getElementById && (document.getElementById('keyStatus') ? document.getElementById('keyStatus').innerHTML='<span style="color:#4A6741">✓ Key loaded from session</span>' : null);
+
+async function callAI(userMsg) {
+  const btn = document.getElementById('sendBtn');
+  if(!savedApiKey){
+    addChatMsg('⚠️ Please enter your Anthropic API key above to use the AI chat.','ai');
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '...';
+  const loading = addChatMsg('Thinking…','ai loading');
+  chatHistory.push({role:'user',content:userMsg});
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': savedApiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: SYSTEM_PROMPT,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    if(data.error){ throw new Error(data.error.message); }
+    const reply = data.content?.map(c=>c.text||'').join('') || 'Sorry, I couldn\'t get a response.';
+    chatHistory.push({role:'assistant',content:reply});
+    loading.className='msg ai';
+    loading.textContent = reply;
+  } catch(e) {
+    loading.className='msg ai';
+    loading.textContent = '⚠️ Error: '+(e.message||'Connection failed. Check your API key.');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Send →';
+  document.getElementById('chatMessages').scrollTop = 9999;
+}
+
+// INIT
+renderProducts();
+saveCart();
+document.getElementById('payMethod').addEventListener('change', function(){
+  document.getElementById('cardFields').style.display = this.value.includes('Card')?'block':'none';
+});
+document.getElementById('cardFields').style.display='none';
+</script>
+</body>
+</html>
